@@ -73,9 +73,9 @@ export const getMembers = async () => {
 };
 
 export const getStatus = async (body: StatusBody) => {
-  const { status, tel } = body;
+  const { status, tel, duration } = body;
 
-  console.log(status, tel);
+  console.log(status, tel, duration);
 
   return {
     message: "상태 업데이트 성공",

@@ -8,5 +8,6 @@ export interface GetCallParams {
 
 export interface StatusBody {
   status: string;
+  duration: string;
   tel: string;
 }
