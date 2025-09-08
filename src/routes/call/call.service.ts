@@ -22,14 +22,14 @@ export const uploadFile = async (request: FastifyRequest) => {
   const timestamp = Date.now();
   const uploadPath = path.join(
     dirname(__filename),
-    `${filename}_${timestamp}.${mimetype?.split("/")[1]}`
+    `${timestamp}_${filename}.${mimetype?.split("/")[1]}`
   );
 
   await fs.writeFile(uploadPath, buffer);
 
   return {
     message: "파일 업로드 성공",
-    fileName: filename || `${filename}_${timestamp}.${mimetype?.split("/")[1]}`,
+    fileName: filename || `${timestamp}_${filename}.${mimetype?.split("/")[1]}`,
     path: uploadPath,
   };
 };
