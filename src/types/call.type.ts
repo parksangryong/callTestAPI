@@ -5,3 +5,8 @@ export interface GetCallQuery {
 export interface GetCallParams {
   id: string;
 }
+
+export interface StatusBody {
+  status: string;
+  tel: string;
+}

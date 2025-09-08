@@ -1,5 +1,9 @@
 import { FastifyRequest } from "fastify";
-import { GetCallQuery, GetCallParams } from "../../types/call.type.js";
+import {
+  GetCallQuery,
+  GetCallParams,
+  StatusBody,
+} from "../../types/call.type.js";
 import { promises as fs } from "fs";
 import * as path from "path";
 import { dirname } from "path";
@@ -43,6 +47,8 @@ export const getCall = async (query: GetCallQuery) => {
 
   const findMember = members.find((member: any) => member.phone === tel);
 
+  console.log(findMember);
+
   return findMember;
 };
 
@@ -56,4 +62,22 @@ export const getCallById = async (params: GetCallParams) => {
   const findMember = members.find((member: any) => member.id === id);
 
   return findMember;
+};
+
+export const getMembers = async () => {
+  const members = JSON.parse(
+    await fs.readFile(path.join(dirname(__filename), "members.json"), "utf8")
+  );
+
+  return members;
+};
+
+export const getStatus = async (body: StatusBody) => {
+  const { status, tel } = body;
+
+  console.log(status, tel);
+
+  return {
+    message: "상태 업데이트 성공",
+  };
 };
