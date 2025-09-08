@@ -8,9 +8,9 @@
     "email": "dev@midaworks.kr",
     "lastConsultation": "2024-01-20",
     "status": "before",
-    "callStatus": "부재1차",
+    "callStatus": "부재10차",
     "lastCallTime": "2024.05.25. 15:22:55",
-    "consultationContent": "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산 대한사람대한으로 길이 보전하세"
+    "consultationContent": "더 이상 전화하지 마세요."
   },
   {
     "id": "member_002",
@@ -40,7 +40,7 @@
   },
   {
     "id": "member_004",
-    "name": "박상룡2",
+    "name": "박상룡",
     "company": "미다웍스",
     "position": "사원",
     "phone": "01050116089",
@@ -49,7 +49,7 @@
     "status": "during",
     "callStatus": "부재1차",
     "lastCallTime": "2024.05.22. 11:15:45",
-    "consultationContent": "회사 업무 관련해서 상담이 필요합니다. 가능한 시간대를 알려주시면 연락드리겠습니다."
+    "consultationContent": "잠시 후 연락드리겠습니다."
   },
   {
     "id": "member_005",
