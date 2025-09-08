@@ -1,12 +1,17 @@
 import { FastifyRequest } from "fastify";
-import { GetCallQuery } from "../../types/call.type.js";
+import { GetCallQuery, GetCallParams } from "../../types/call.type.js";
 import { promises as fs } from "fs";
 import * as path from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const uploadFile = async (request: FastifyRequest) => {
   const data = await request.file();
 
-  const { filename, file } = data || {};
+  const { filename, mimetype, file } = data || {};
 
   const chunks: Buffer[] = [];
   for await (const chunk of file || []) {
@@ -15,13 +20,16 @@ export const uploadFile = async (request: FastifyRequest) => {
   const buffer = Buffer.concat(chunks);
 
   const timestamp = Date.now();
-  const uploadPath = path.join(__dirname, `${filename}_${timestamp}`);
+  const uploadPath = path.join(
+    dirname(__filename),
+    `${filename}_${timestamp}.${mimetype?.split("/")[1]}`
+  );
 
   await fs.writeFile(uploadPath, buffer);
 
   return {
     message: "파일 업로드 성공",
-    fileName: filename || `${filename}_${timestamp}`,
+    fileName: filename || `${filename}_${timestamp}.${mimetype?.split("/")[1]}`,
     path: uploadPath,
   };
 };
@@ -34,6 +42,18 @@ export const getCall = async (query: GetCallQuery) => {
   );
 
   const findMember = members.find((member: any) => member.phone === tel);
+
+  return findMember;
+};
+
+export const getCallById = async (params: GetCallParams) => {
+  const { id } = params;
+
+  const members = JSON.parse(
+    await fs.readFile(path.join(dirname(__filename), "members.json"), "utf8")
+  );
+
+  const findMember = members.find((member: any) => member.id === id);
 
   return findMember;
 };
