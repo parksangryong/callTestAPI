@@ -1,0 +1,67 @@
+[
+  {
+    "id": "member_001",
+    "name": "강수성",
+    "company": "주식회사 미다웍스",
+    "position": "주임",
+    "phone": "010-2767-4303",
+    "email": "dev@midaworks.kr",
+    "lastConsultation": "2024-01-20",
+    "status": "before",
+    "callStatus": "부재1차",
+    "lastCallTime": "2024.05.25. 15:22:55",
+    "consultationContent": "동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산 대한사람대한으로 길이 보전하세"
+  },
+  {
+    "id": "member_002",
+    "name": "홍길동",
+    "company": "테스트 회사",
+    "position": "대리",
+    "phone": "010-1234-5678",
+    "email": "hong@test.com",
+    "lastConsultation": "2024-01-18",
+    "status": "during",
+    "callStatus": "부재2차",
+    "lastCallTime": "2024.05.24. 14:30:12",
+    "consultationContent": "안녕하세요. 홍길동입니다. 상담 문의드리고 싶은 내용이 있어서 연락드렸습니다. 언제 시간 되실까요?"
+  },
+  {
+    "id": "member_003",
+    "name": "김철수",
+    "company": "샘플 기업",
+    "position": "과장",
+    "phone": "010-9876-5432",
+    "email": "kim@sample.com",
+    "lastConsultation": "2024-01-15",
+    "status": "completed",
+    "callStatus": "상담완료",
+    "lastCallTime": "2024.05.23. 16:45:30",
+    "consultationContent": "상담이 잘 마무리되었습니다. 추가 문의사항이 있으시면 언제든 연락주세요. 감사합니다."
+  },
+  {
+    "id": "member_004",
+    "name": "박상룡",
+    "company": "미다웍스",
+    "position": "사원",
+    "phone": "010-5011-6089",
+    "email": "bsr@midaworks.kr",
+    "lastConsultation": "2024-01-12",
+    "status": "during",
+    "callStatus": "부재1차",
+    "lastCallTime": "2024.05.22. 11:15:45",
+    "consultationContent": "회사 업무 관련해서 상담이 필요합니다. 가능한 시간대를 알려주시면 연락드리겠습니다."
+  },
+  {
+    "id": "member_005",
+    "name": "김민수",
+    "company": "테크스타트업",
+    "position": "대표",
+    "phone": "010-1111-2222",
+    "email": "kim@techstartup.com",
+    "lastConsultation": "2024-01-20",
+    "status": "before",
+    "callStatus": "부재3차",
+    "lastCallTime": "2024.05.21. 09:30:20",
+    "consultationContent": "스타트업 관련 컨설팅 문의입니다. 비즈니스 모델 검토와 투자 유치 관련해서 상담받고 싶습니다."
+  }
+]

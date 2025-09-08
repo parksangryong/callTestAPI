@@ -12,17 +12,18 @@ import { dirname, join } from "path";
 import userRoutes from "./routes/user/user.controller";
 import authRoutes from "./routes/auth/auth.controller";
 import filesRoutes from "./routes/file/file.controller";
+import callRoutes from "./routes/call/call.controller";
 
 // Middleware
 import { errorHandler } from "./middleware/error.middleware";
 import { authenticateToken } from "./middleware/auth.middleware";
 
 // Prisma
-import { prisma } from "./lib/prisma";
+// import { prisma } from "./lib/prisma";
 
 // Plugins
 import swagger from "./plugins/swagger";
-import redis from "./plugins/redis";
+// import redis from "./plugins/redis";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,7 +36,7 @@ errorHandler(app);
 
 // 미들웨어 등록
 app.register(swagger); //스웨거 미들웨어
-app.register(redis);
+// app.register(redis);
 app.register(multipart, {
   limits: {
     fileSize: 20 * 1024 * 1024, // 20MB
@@ -58,6 +59,7 @@ app.register(fastifyRateLimit, {
 // 라우터 등록
 // 인증이 필요없는 라우트
 app.register(authRoutes, { prefix: "/auth" });
+app.register(callRoutes, { prefix: "/call" });
 app.register(async function authenticatedRoutes(fastify) {
   // 인증이 필요한 라우트들에 미들웨어 적용
   fastify.addHook("preHandler", authenticateToken);
@@ -70,7 +72,7 @@ app.register(async function authenticatedRoutes(fastify) {
 // Prisma DB 연결 테스트
 const testConnection = async () => {
   try {
-    await prisma.$connect();
+    // await prisma.$connect();
     console.log("✅ Database connection successful");
   } catch (error) {
     console.error("❌ Database connection failed:", error);
