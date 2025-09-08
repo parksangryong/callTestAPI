@@ -75,9 +75,25 @@ export const getMembers = async () => {
 export const getStatus = async (body: StatusBody) => {
   const { status, tel, duration } = body;
 
-  console.log(status, tel, duration);
+  let returnData = {
+    status: "",
+    tel: tel,
+  };
+
+  if (status === "incoming") {
+    if (parseInt(duration) > 0) {
+      returnData.status = "incoming";
+    } else {
+      returnData.status = "incoming_missed";
+    }
+  } else if (status === "outgoing") {
+    returnData.status = "outgoing"; // 발신 중 녹음파일 있으면 outgoing, 없으면 outgoing_missed
+  }
+
+  console.log(returnData);
 
   return {
     message: "상태 업데이트 성공",
+    data: returnData,
   };
 };
