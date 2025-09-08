@@ -6,14 +6,20 @@ import {
   getCall,
   getCallById,
   getMembers,
+  getStatus,
 } from "./call.service.js";
 
-import { GetCallQuery, GetCallParams } from "../../types/call.type.js";
+import {
+  GetCallQuery,
+  GetCallParams,
+  StatusBody,
+} from "../../types/call.type.js";
 import {
   uploadSchema,
   getCallSchema,
   getCallByIdSchema,
   getMembersSchema,
+  getStatusSchema,
 } from "./call.schema.js";
 
 export default async function callRoutes(server: FastifyInstance) {
@@ -46,6 +52,14 @@ export default async function callRoutes(server: FastifyInstance) {
     handler: async (request, reply) => {
       const members = await getMembers();
       return reply.code(200).send({ members });
+    },
+  });
+
+  server.post<{ Body: StatusBody }>("/status", {
+    schema: getStatusSchema,
+    handler: async (request, reply) => {
+      const status = await getStatus(request.body);
+      return reply.code(200).send(status);
     },
   });
 }

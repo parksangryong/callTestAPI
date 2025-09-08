@@ -6,12 +6,6 @@ export const uploadSchema = {
       description: "파일 업로드 성공 시 메시지를 반환합니다.",
       properties: {
         message: { type: "string" },
-        fileName: { type: "string" },
-        path: { type: "string" },
-        formData: {
-          type: "object",
-          description: "추가 폼 데이터",
-        },
       },
     },
     400: {
@@ -92,6 +86,28 @@ export const getMembersSchema = {
       message: { type: "string" },
       properties: {
         members: { type: "array" },
+      },
+    },
+  },
+};
+
+export const getStatusSchema = {
+  tags: ["call"],
+  body: {
+    type: "object",
+    description: "상태를 업데이트합니다.",
+    required: ["status"],
+    properties: {
+      status: { type: "string" },
+      tel: { type: "string" },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      description: "상태 업데이트 성공 시 메시지를 반환합니다.",
+      properties: {
+        message: { type: "string" },
       },
     },
   },
