@@ -1,3 +1,4 @@
+import "dotenv/config";
 import Fastify from "fastify";
 import fastifyCors from "@fastify/cors";
 import fastifyRateLimit from "@fastify/rate-limit";
@@ -13,6 +14,7 @@ import userRoutes from "./routes/user/user.controller";
 import authRoutes from "./routes/auth/auth.controller";
 import filesRoutes from "./routes/file/file.controller";
 import callRoutes from "./routes/call/call.controller";
+import googleRoutes from "./routes/google/google.controller";
 
 // Middleware
 import { errorHandler } from "./middleware/error.middleware";
@@ -60,6 +62,7 @@ app.register(fastifyRateLimit, {
 // 인증이 필요없는 라우트
 app.register(authRoutes, { prefix: "/auth" });
 app.register(callRoutes, { prefix: "/call" });
+app.register(googleRoutes, { prefix: "/google" });
 app.register(async function authenticatedRoutes(fastify) {
   // 인증이 필요한 라우트들에 미들웨어 적용
   fastify.addHook("preHandler", authenticateToken);
