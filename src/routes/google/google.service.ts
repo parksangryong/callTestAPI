@@ -201,3 +201,66 @@ export const googleDownloadWithUserToken = async (fileName: string) => {
     throw new Error(`Failed to get file info '${fileName}' with user token`);
   }
 };
+
+// 사용자 Access Token으로 파일 다운로드 (토큰 자동 관리)
+export const googleDownloadWithUserTokenList = async (keyword: string) => {
+  try {
+    const accessToken = await ensureValidToken(); // 토큰 확인/갱신
+    const auth = getAuthWithToken(accessToken);
+    const service = google.drive({ version: "v3", auth });
+
+    const searchResponse = await service.files.list({
+      q: `name contains '${keyword}' and trashed=false`,
+      fields:
+        "files(id,name,mimeType,size,webViewLink,webContentLink,createdTime,modifiedTime)",
+      orderBy: "createdTime desc",
+    });
+
+    console.log("Search response:", searchResponse.data);
+
+    const files = searchResponse.data.files;
+    if (!files || files.length === 0) {
+      throw new Error(`File '${keyword}' not found`);
+    }
+
+    let fileData = [];
+
+    // 파일 권한 설정
+    for (const file of files) {
+      try {
+        await service.permissions.create({
+          fileId: file.id || "",
+          requestBody: {
+            type: "anyone",
+            role: "reader",
+          },
+        });
+        console.log(`✅ File ${file.id} is now publicly accessible`);
+      } catch (permError) {
+        console.log(`ℹ️ File ${file.id} may already be publicly accessible`);
+      }
+
+      fileData.push({
+        fileId: file.id,
+        fileName: file.name,
+        mimeType: file.mimeType,
+        size: file.size,
+        webViewLink: file.webViewLink, // 브라우저에서 볼 수 있는 링크
+        webContentLink: file.webContentLink, // 파일을 직접 다운로드할 수 있는 링크
+        createdTime: file.createdTime,
+        modifiedTime: file.modifiedTime,
+        // 파일 타입 정보
+        isAudio: file.mimeType?.startsWith("audio/") || false,
+        isVideo: file.mimeType?.startsWith("video/") || false,
+        isImage: file.mimeType?.startsWith("image/") || false,
+        // 파일 공유를 위한 퍼블릭 URL (더 안정적)
+        downloadUrl: `https://drive.google.com/uc?export=download&id=${file.id}`,
+      });
+    }
+
+    return fileData;
+  } catch (error) {
+    console.error("Error getting file info with user token:", error);
+    throw new Error(`Failed to get file info '${keyword}' with user token`);
+  }
+};

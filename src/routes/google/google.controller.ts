@@ -6,6 +6,7 @@ import {
   googleUploadWithUserToken,
   googleDownloadWithUserToken,
   verifyAndStoreTokens,
+  googleDownloadWithUserTokenList,
 } from "./google.service.js";
 
 // 타입 정의는 필요시 추가
@@ -89,6 +90,34 @@ export default async function googleRoutes(server: FastifyInstance) {
         console.error("Download error:", error);
         reply.code(500).send({
           error: "파일 다운로드 실패",
+          message: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    },
+  });
+
+  // 파일 다운로드 라우트 (파일명으로)
+  server.post<{ Body: { keyword: string } }>("/list", {
+    handler: async (request, reply) => {
+      try {
+        const { keyword } = request.body;
+
+        if (!keyword) {
+          return reply.code(400).send({
+            error: "키워드가 필요합니다.",
+          });
+        }
+
+        const result = await googleDownloadWithUserTokenList(keyword);
+
+        reply.code(200).send({
+          listCount: result.length,
+          data: result,
+        });
+      } catch (error) {
+        console.error("Download error:", error);
+        reply.code(500).send({
+          error: "키워드 리스트 다운로드 실패",
           message: error instanceof Error ? error.message : "Unknown error",
         });
       }
