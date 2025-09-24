@@ -153,29 +153,51 @@ export const googleDownloadWithUserToken = async (fileName: string) => {
 
     const searchResponse = await service.files.list({
       q: `name='${fileName}' and trashed=false`,
-      fields: "files(id,name,mimeType,size)",
+      fields:
+        "files(id,name,mimeType,size,webViewLink,webContentLink,createdTime,modifiedTime)",
     });
+
+    console.log("Search response:", searchResponse.data);
 
     const files = searchResponse.data.files;
     if (!files || files.length === 0) {
       throw new Error(`File '${fileName}' not found`);
     }
 
-    const fileId = files[0].id;
-    const downloadResponse = await service.files.get({
-      fileId: fileId || "",
-      alt: "media",
-    });
+    const file = files[0];
 
-    console.log("File downloaded with user token:", files[0]);
+    // 파일 권한 설정
+    try {
+      await service.permissions.create({
+        fileId: file.id || "",
+        requestBody: {
+          type: "anyone",
+          role: "reader",
+        },
+      });
+      console.log(`✅ File ${file.id} is now publicly accessible`);
+    } catch (permError) {
+      console.log(`ℹ️ File ${file.id} may already be publicly accessible`);
+    }
+
     return {
-      fileName: files[0].name,
-      mimeType: files[0].mimeType,
-      size: files[0].size,
-      data: downloadResponse.data,
+      fileId: file.id,
+      fileName: file.name,
+      mimeType: file.mimeType,
+      size: file.size,
+      webViewLink: file.webViewLink, // 브라우저에서 볼 수 있는 링크
+      webContentLink: file.webContentLink, // 파일을 직접 다운로드할 수 있는 링크
+      createdTime: file.createdTime,
+      modifiedTime: file.modifiedTime,
+      // 파일 타입 정보
+      isAudio: file.mimeType?.startsWith("audio/") || false,
+      isVideo: file.mimeType?.startsWith("video/") || false,
+      isImage: file.mimeType?.startsWith("image/") || false,
+      // 파일 공유를 위한 퍼블릭 URL (더 안정적)
+      downloadUrl: `https://drive.google.com/uc?export=download&id=${file.id}`,
     };
   } catch (error) {
-    console.error("Error downloading with user token:", error);
-    throw new Error(`Failed to download file '${fileName}' with user token`);
+    console.error("Error getting file info with user token:", error);
+    throw new Error(`Failed to get file info '${fileName}' with user token`);
   }
 };
