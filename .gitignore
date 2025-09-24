@@ -2,4 +2,7 @@ node_modules
 # Keep environment variables out of version control
 .env
 
+# 토큰 파일 (민감한 정보)
+.tokens.json
+
 distsrc/lib/*.json

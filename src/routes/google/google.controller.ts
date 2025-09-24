@@ -51,9 +51,7 @@ export default async function googleRoutes(server: FastifyInstance) {
           });
         }
 
-        const result = await googleUploadWithUserToken(
-          request.body as MultipartFile
-        );
+        const result = await googleUploadWithUserToken(data);
 
         reply.code(201).send({
           success: true,

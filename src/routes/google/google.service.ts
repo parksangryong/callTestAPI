@@ -2,27 +2,46 @@ import { OAuth2Client } from "google-auth-library";
 import { google } from "googleapis";
 import { Readable } from "stream";
 import type { MultipartFile } from "@fastify/multipart";
+import fs from "fs/promises";
+import path from "path";
 
 // OAuth 2.0 클라이언트 설정
 const oAuth2Client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI
+  process.env.GOOGLE_CLIENT_SECRET
 );
 
 // 토큰 저장소 (Redis를 사용하는 것이 좋습니다. 여기서는 간단한 메모리 저장소로 예시)
 let storedTokens: any = null;
 
+// 토큰 파일 경로
+const TOKENS_FILE = path.join(process.cwd(), ".tokens.json");
+
 // 토큰 저장
-const saveTokens = (tokens: any) => {
-  storedTokens = tokens;
-  // 실제로는 Redis에 저장: redisClient.set('user_tokens', JSON.stringify(tokens));
+const saveTokens = async (tokens: any) => {
+  try {
+    await fs.writeFile(TOKENS_FILE, JSON.stringify(tokens, null, 2));
+    console.log("✅ Tokens saved to file");
+  } catch (error) {
+    console.error("❌ Error saving tokens to file:", error);
+    // 파일 저장이 실패하면 메모리에 저장 (임시 방편)
+    storedTokens = tokens;
+  }
 };
 
 // 토큰 로드
-const loadTokens = () => {
+const loadTokens = async () => {
+  try {
+    const data = await fs.readFile(TOKENS_FILE, "utf-8");
+    const tokens = JSON.parse(data);
+    console.log("✅ Tokens loaded from file");
+    return tokens;
+  } catch (error) {
+    console.error("❌ Error loading tokens from file:", error);
+  }
+
+  // 파일에서 로드 실패하면 메모리에서 로드 (임시 방편)
   return storedTokens;
-  // 실제로는 Redis에서: const tokens = await redisClient.get('user_tokens'); return JSON.parse(tokens);
 };
 
 // 클라이언트로부터 받은 토큰을 검증하고 저장하는 함수 (간소화됨, .env 없이)
@@ -58,7 +77,7 @@ export const verifyAndStoreTokens = async (
 
 // 토큰이 유효한지 확인하고 필요시 새로고침
 const ensureValidToken = async () => {
-  const tokens = loadTokens();
+  const tokens = await loadTokens();
   if (!tokens) {
     throw new Error("No tokens available. Please authenticate first.");
   }
@@ -81,19 +100,6 @@ const ensureValidToken = async () => {
   }
 
   return tokens.access_token;
-};
-
-// 인증 코드로 토큰 교환 후 저장
-export const exchangeCodeForTokens = async (code: string) => {
-  try {
-    const { tokens } = await oAuth2Client.getToken(code);
-    oAuth2Client.setCredentials(tokens);
-    saveTokens(tokens);
-    return tokens;
-  } catch (error) {
-    console.error("Error exchanging code for tokens:", error);
-    throw new Error("Failed to exchange code for tokens");
-  }
 };
 
 // Access Token으로 인증 설정 (내부용)
