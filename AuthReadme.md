@@ -5,3 +5,5 @@
 2. OAuth 발급
    - GOOGLE_CLIENT_ID(.env)에 추가
    - GOOGLE_CLIENT_SECRET(.env)에 추가
+3. oAuth2Client 설정 후 토큰 저장
+4. 토큰 통해 녹취 업로드 및 다운로드
